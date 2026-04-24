@@ -1,0 +1,186 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import Header from '../../../components/Header.astro';
+import { SITE_TITLE } from '../../../consts';
+import { getReadingTime } from '../../../utils/readingTime';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	const tags = [...new Set(posts.flatMap((p) => p.data.tags ?? []))];
+
+	return tags.map((tag) => ({
+		params: { tag },
+		props: {
+			tag,
+			posts: posts
+				.filter((p) => p.data.tags?.includes(tag))
+				.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+		},
+	}));
+}
+
+const { tag, posts } = Astro.props;
+
+const postsWithMeta = posts.map((post: any) => ({
+	...post,
+	readingTime: getReadingTime(post.body ?? ''),
+}));
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`#${tag} — ${SITE_TITLE}`}
+			description={`All articles tagged #${tag} on ${SITE_TITLE}.`}
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+
+			<div class="page-header">
+				<a href="/blog" class="back-link">&larr; All articles</a>
+				<h1><span class="tag-prefix">#</span>{tag}</h1>
+				<p class="page-sub">{postsWithMeta.length} article{postsWithMeta.length !== 1 ? 's' : ''}</p>
+			</div>
+
+			<ul class="post-list">
+				{postsWithMeta.map((post: any) => (
+					<li class="post-item">
+						<a href={`/blog/${post.id}/`} class="post-link">
+							<div class="post-body">
+								<span class="post-title">{post.data.title}</span>
+								{post.data.description && (
+									<span class="post-desc">{post.data.description}</span>
+								)}
+							</div>
+							<div class="post-right">
+								<FormattedDate date={post.data.pubDate} />
+								<span class="reading-time">{post.readingTime} min</span>
+							</div>
+						</a>
+					</li>
+				))}
+			</ul>
+
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-header {
+		padding-bottom: var(--space-xl);
+		border-bottom: 1px solid var(--border);
+		margin-bottom: var(--space-xl);
+	}
+
+	.back-link {
+		display: inline-block;
+		font-size: 0.8rem;
+		font-family: var(--font-mono);
+		color: var(--text-muted);
+		text-decoration: none;
+		margin-bottom: var(--space-lg);
+		transition: color var(--transition);
+	}
+
+	.back-link:hover {
+		color: var(--text);
+	}
+
+	.page-header h1 {
+		font-size: 1.5rem;
+		margin-bottom: var(--space-sm);
+	}
+
+	.tag-prefix {
+		color: var(--text-muted);
+	}
+
+	.page-sub {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		margin: 0;
+		font-family: var(--font-mono);
+	}
+
+	.post-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.post-item {
+		border-top: 1px solid var(--border);
+	}
+
+	.post-item:last-child {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.post-link {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-xl);
+		padding: var(--space-lg) 0;
+		text-decoration: none;
+	}
+
+	.post-link:hover .post-title {
+		color: var(--accent);
+	}
+
+	.post-body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+		flex: 1;
+		min-width: 0;
+	}
+
+	.post-title {
+		font-size: 0.95rem;
+		font-weight: 500;
+		color: var(--text);
+		transition: color var(--transition);
+	}
+
+	.post-desc {
+		font-size: 0.825rem;
+		color: var(--text-muted);
+		line-height: 1.5;
+	}
+
+	.post-right {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.25rem;
+		flex-shrink: 0;
+		padding-top: 0.1em;
+	}
+
+	.reading-time {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-subtle);
+	}
+
+	@media (max-width: 540px) {
+		.post-link {
+			flex-direction: column;
+			gap: var(--space-sm);
+		}
+
+		.post-right {
+			flex-direction: row;
+			gap: var(--space-md);
+		}
+	}
+</style>

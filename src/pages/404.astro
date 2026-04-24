@@ -1,0 +1,73 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`404 — ${SITE_TITLE}`} description="Page not found." />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="not-found">
+				<p class="code">404</p>
+				<h1>Page not found</h1>
+				<p class="desc">
+					This page doesn't exist or was moved. Happens to the best of us.
+				</p>
+				<div class="links">
+					<a href="/">Home</a>
+					<a href="/blog">Blog</a>
+					<a href="/about">About</a>
+				</div>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.not-found {
+		padding: var(--space-2xl) 0;
+	}
+
+	.code {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--text-subtle);
+		margin-bottom: var(--space-md);
+	}
+
+	h1 {
+		font-size: 2rem;
+		margin-bottom: var(--space-md);
+	}
+
+	.desc {
+		font-size: 0.95rem;
+		color: var(--text-muted);
+		margin-bottom: var(--space-xl);
+	}
+
+	.links {
+		display: flex;
+		gap: var(--space-lg);
+	}
+
+	.links a {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color var(--transition);
+	}
+
+	.links a:hover {
+		color: var(--text);
+	}
+</style>

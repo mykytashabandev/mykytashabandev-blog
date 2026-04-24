@@ -1,0 +1,39 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+import { getReadingTime } from '../../utils/readingTime';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: post,
+	}));
+}
+
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content, headings } = await render(post);
+
+const readingTime = getReadingTime(post.body ?? '');
+
+const allPosts = await getCollection('blog');
+const relatedPosts = allPosts
+	.filter(
+		(p) =>
+			p.id !== post.id &&
+			p.data.tags?.some((t) => post.data.tags?.includes(t)),
+	)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 3);
+---
+
+<BlogPost
+	{...post.data}
+	headings={headings}
+	readingTime={readingTime}
+	relatedPosts={relatedPosts}
+>
+	<Content />
+</BlogPost>

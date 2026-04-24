@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /consulting/
+
+Sitemap: https://mykytashaban.dev/sitemap-index.xml

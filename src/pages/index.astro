@@ -1,0 +1,219 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import { AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 6);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+
+			<section class="hero">
+				<p class="hero-eyebrow">mykytashaban.dev</p>
+				<h1 class="hero-headline">Frontend<br />Performance<br />Engineer</h1>
+				<p class="hero-sub">
+					I'm {AUTHOR.name}, based in {AUTHOR.location}. I write about web performance —
+					Core Web Vitals, rendering, JavaScript, and making e&#x2011;commerce sites fast.
+				</p>
+				<div class="hero-links">
+					<a href="/blog" class="hero-cta">Read the blog &rarr;</a>
+					<a href="/about" class="hero-secondary">About me</a>
+				</div>
+			</section>
+
+			<section class="recent">
+				<h2 class="section-label">Recent articles</h2>
+				<ul class="post-list">
+					{posts.map((post) => (
+						<li class="post-item">
+							<a href={`/blog/${post.id}/`} class="post-link">
+								<div class="post-body">
+									<span class="post-title">{post.data.title}</span>
+									{post.data.tags?.length > 0 && (
+										<div class="post-tags">
+											{post.data.tags.slice(0, 3).map((tag) => (
+												<span class="tag">#{tag}</span>
+											))}
+										</div>
+									)}
+								</div>
+								<span class="post-meta">
+									<FormattedDate date={post.data.pubDate} />
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+				<a href="/blog" class="all-posts-link">All articles &rarr;</a>
+			</section>
+
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.hero {
+		padding: var(--space-2xl) 0;
+		border-bottom: 1px solid var(--border);
+		margin-bottom: var(--space-2xl);
+	}
+
+	.hero-eyebrow {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin-bottom: var(--space-md);
+	}
+
+	.hero-headline {
+		font-size: clamp(2.5rem, 6vw, 3.5rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		line-height: 1.15;
+		color: var(--text);
+		margin-bottom: var(--space-lg);
+	}
+
+	.hero-sub {
+		font-size: 1rem;
+		color: var(--text-muted);
+		max-width: 520px;
+		line-height: 1.7;
+		margin-bottom: var(--space-xl);
+	}
+
+	.hero-links {
+		display: flex;
+		align-items: center;
+		gap: var(--space-lg);
+	}
+
+	.hero-cta {
+		font-size: 0.875rem;
+		color: var(--text);
+		text-decoration: none;
+		transition: color var(--transition);
+	}
+
+	.hero-cta:hover {
+		color: var(--text-muted);
+	}
+
+	.hero-secondary {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color var(--transition);
+	}
+
+	.hero-secondary:hover {
+		color: var(--text);
+	}
+
+	.section-label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: var(--text-subtle);
+		margin-bottom: var(--space-lg);
+	}
+
+	.post-list {
+		list-style: none;
+		margin: 0 0 var(--space-lg) 0;
+		padding: 0;
+	}
+
+	.post-item {
+		border-top: 1px solid var(--border);
+	}
+
+	.post-item:last-child {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.post-link {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-lg);
+		padding: var(--space-md) 0;
+		text-decoration: none;
+	}
+
+	.post-link:hover .post-title {
+		color: var(--accent);
+	}
+
+	.post-body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+		min-width: 0;
+	}
+
+	.post-title {
+		font-size: 0.95rem;
+		color: var(--text);
+		transition: color var(--transition);
+	}
+
+	.post-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+
+	.tag {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--text-subtle);
+	}
+
+	.post-meta {
+		flex-shrink: 0;
+	}
+
+	.all-posts-link {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color var(--transition);
+	}
+
+	.all-posts-link:hover {
+		color: var(--text);
+	}
+
+	@media (max-width: 540px) {
+		.post-link {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-xs);
+		}
+		.hero-headline {
+			font-size: 2.2rem;
+		}
+		.hero-links {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+</style>

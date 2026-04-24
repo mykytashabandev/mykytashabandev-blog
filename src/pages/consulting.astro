@@ -1,0 +1,135 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { AUTHOR, SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Consulting — ${SITE_TITLE}`}
+			description={`Web performance consulting by ${AUTHOR.name}.`}
+		/>
+		<!-- Not linked in nav yet — available at /consulting when ready -->
+		<meta name="robots" content="noindex, nofollow" />
+	</head>
+	<body>
+		<Header />
+		<main>
+
+			<div class="page-header">
+				<p class="eyebrow">Coming soon</p>
+				<h1>Performance Consulting</h1>
+				<p class="page-sub">
+					I help e-commerce and SaaS teams improve Core Web Vitals, reduce JavaScript
+					weight, and build performance monitoring into their workflow.
+				</p>
+			</div>
+
+			<div class="services">
+				<div class="service-item">
+					<h2>Performance Audit</h2>
+					<p>Deep dive into your site's performance. I'll identify bottlenecks, prioritize
+					fixes by impact, and deliver a clear action plan with before/after benchmarks.</p>
+				</div>
+				<div class="service-item">
+					<h2>Core Web Vitals Fix</h2>
+					<p>Targeted engagement focused on getting your LCP, CLS, and INP into the "good"
+					range. Includes real user monitoring setup so you can track improvements.</p>
+				</div>
+				<div class="service-item">
+					<h2>Checkout Performance</h2>
+					<p>Specialized review of checkout and payment flows — the surface where performance
+					most directly affects conversion rates.</p>
+				</div>
+			</div>
+
+			<div class="cta-section">
+				<p class="cta-label">Interested?</p>
+				<p class="cta-desc">
+					This page isn't public yet. If you found it, reach out directly:
+					<a href={`mailto:${AUTHOR.email}`}>{AUTHOR.email}</a>
+				</p>
+			</div>
+
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-header {
+		padding-bottom: var(--space-xl);
+		border-bottom: 1px solid var(--border);
+		margin-bottom: var(--space-2xl);
+	}
+
+	.eyebrow {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--text-muted);
+		margin-bottom: var(--space-md);
+	}
+
+	.page-header h1 {
+		font-size: 1.75rem;
+		margin-bottom: var(--space-md);
+	}
+
+	.page-sub {
+		font-size: 1rem;
+		color: var(--text-muted);
+		margin: 0;
+		max-width: 520px;
+		line-height: 1.7;
+	}
+
+	.services {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		margin-bottom: var(--space-2xl);
+	}
+
+	.service-item {
+		padding: var(--space-xl) 0;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.service-item h2 {
+		font-size: 1rem;
+		font-weight: 600;
+		margin-bottom: var(--space-sm);
+	}
+
+	.service-item p {
+		font-size: 0.9rem;
+		color: var(--text-muted);
+		max-width: 480px;
+		line-height: 1.7;
+		margin: 0;
+	}
+
+	.cta-section {
+		padding: var(--space-xl) 0;
+	}
+
+	.cta-label {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--text-subtle);
+		margin-bottom: var(--space-sm);
+	}
+
+	.cta-desc {
+		font-size: 0.9rem;
+		color: var(--text-muted);
+		margin: 0;
+	}
+</style>

@@ -1,0 +1,369 @@
+---
+import { Image } from 'astro:assets';
+import type { MarkdownHeading } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import { AUTHOR, SITE_TITLE } from '../consts';
+
+interface Props {
+	title: string;
+	description?: string;
+	pubDate?: Date;
+	updatedDate?: Date;
+	heroImage?: ImageMetadata;
+	tags?: string[];
+	readingTime?: number;
+	headings?: MarkdownHeading[];
+	relatedPosts?: CollectionEntry<'blog'>[];
+	pageJsonLd?: Record<string, unknown>;
+	slug?: string;
+}
+
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	tags = [],
+	readingTime,
+	headings = [],
+	relatedPosts = [],
+	pageJsonLd,
+	slug,
+} = Astro.props;
+
+const ogImage = slug ? `/og/${slug}.png` : undefined;
+const hasToc = headings.filter((h) => h.depth === 2 || h.depth === 3).length > 1;
+
+const jsonLd = pubDate
+	? {
+			'@context': 'https://schema.org',
+			'@type': 'BlogPosting',
+			headline: title,
+			description,
+			datePublished: pubDate.toISOString(),
+			dateModified: (updatedDate ?? pubDate).toISOString(),
+			author: {
+				'@type': 'Person',
+				name: AUTHOR.name,
+				url: `${Astro.site}about`,
+			},
+			publisher: {
+				'@type': 'Person',
+				name: AUTHOR.name,
+			},
+			mainEntityOfPage: {
+				'@type': 'WebPage',
+				'@id': Astro.url.toString(),
+			},
+		}
+	: undefined;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`${title} — ${SITE_TITLE}`}
+			description={description ?? ''}
+			ogImage={ogImage}
+			jsonLd={pageJsonLd ?? jsonLd}
+		/>
+	</head>
+	<body>
+		<Header />
+		<main class:list={['post-main', { 'has-toc': hasToc }]}>
+			<article class="post-content">
+
+				<a href="/blog" class="back-link">&larr; All articles</a>
+
+				<header class="post-header">
+					{pubDate && (
+						<div class="post-meta-line">
+							<FormattedDate date={pubDate} />
+							{readingTime && (
+								<span class="reading-time">&middot; {readingTime} min read</span>
+							)}
+							{updatedDate && (
+								<span class="updated">&middot; Updated <FormattedDate date={updatedDate} /></span>
+							)}
+						</div>
+					)}
+					<h1 class="post-title">{title}</h1>
+					{description && <p class="post-description">{description}</p>}
+					{tags.length > 0 && (
+						<div class="post-tags">
+							{tags.map((tag) => (
+								<a href={`/blog/tag/${tag}/`} class="tag">#{tag}</a>
+							))}
+						</div>
+					)}
+				</header>
+
+				{heroImage && (
+					<div class="hero-image">
+						<Image width={680} height={340} src={heroImage} alt="" />
+					</div>
+				)}
+
+				<div class="prose">
+					<slot />
+				</div>
+
+				<footer class="post-footer">
+					<div class="author-card">
+						<div class="author-info">
+							<span class="author-name">{AUTHOR.name}</span>
+							<span class="author-title">{AUTHOR.title}</span>
+						</div>
+					</div>
+				</footer>
+
+				{relatedPosts.length > 0 && (
+					<section class="related">
+						<h2 class="related-label">Related</h2>
+						<ul class="related-list">
+							{relatedPosts.map((post) => (
+								<li class="related-item">
+									<a href={`/blog/${post.id}/`} class="related-link">
+										<span class="related-title">{post.data.title}</span>
+										<FormattedDate date={post.data.pubDate} />
+									</a>
+								</li>
+							))}
+						</ul>
+					</section>
+				)}
+
+			</article>
+
+			{hasToc && (
+				<aside class="toc-sidebar">
+					<TableOfContents headings={headings} />
+				</aside>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	/* Layout override for post pages */
+	main {
+		width: auto;
+		max-width: calc(100% - 2rem);
+		padding: var(--space-2xl) var(--space-md);
+	}
+
+	.post-content {
+		max-width: var(--max-width);
+		margin: 0 auto;
+	}
+
+	/* TOC sidebar layout on wide screens */
+	@media (min-width: 1140px) {
+		main.has-toc {
+			max-width: 1060px;
+			display: grid;
+			grid-template-columns: var(--max-width) 1fr;
+			gap: var(--space-2xl);
+			align-items: start;
+		}
+
+		main.has-toc .post-content {
+			margin: 0;
+		}
+
+		.toc-sidebar {
+			position: sticky;
+			top: calc(var(--header-height) + var(--space-xl));
+		}
+	}
+
+	.toc-sidebar {
+		display: none;
+	}
+
+	@media (min-width: 1140px) {
+		.toc-sidebar {
+			display: block;
+		}
+	}
+
+	/* Back link */
+	.back-link {
+		display: inline-block;
+		font-size: 0.8rem;
+		font-family: var(--font-mono);
+		color: var(--text-muted);
+		text-decoration: none;
+		margin-bottom: var(--space-xl);
+		transition: color var(--transition);
+	}
+
+	.back-link:hover {
+		color: var(--text);
+	}
+
+	/* Post header */
+	.post-header {
+		margin-bottom: var(--space-2xl);
+		padding-bottom: var(--space-xl);
+		border-bottom: 1px solid var(--border);
+	}
+
+	.post-meta-line {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-md);
+		flex-wrap: wrap;
+	}
+
+	.reading-time,
+	.updated {
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		color: var(--text-muted);
+	}
+
+	.post-title {
+		font-size: clamp(1.75rem, 4vw, 2.25rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		line-height: 1.15;
+		color: var(--text);
+		margin-bottom: var(--space-md);
+	}
+
+	.post-description {
+		font-size: 1rem;
+		color: var(--text-muted);
+		line-height: 1.6;
+		margin: 0 0 var(--space-md) 0;
+	}
+
+	.post-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-sm);
+		margin-top: var(--space-sm);
+	}
+
+	.tag {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		text-decoration: none;
+		padding: 0.2em 0.6em;
+		border: 1px solid var(--border-hover);
+		border-radius: 4px;
+		transition: color var(--transition), border-color var(--transition);
+	}
+
+	.tag:hover {
+		color: var(--text);
+		border-color: var(--text-muted);
+	}
+
+	/* Hero image */
+	.hero-image {
+		margin-bottom: var(--space-2xl);
+	}
+
+	.hero-image img {
+		width: 100%;
+		height: auto;
+		border-radius: 8px;
+		border: 1px solid var(--border);
+	}
+
+	/* Prose */
+	.prose {
+		font-size: 1rem;
+		line-height: 1.8;
+	}
+
+	/* Author card */
+	.post-footer {
+		margin-top: var(--space-2xl);
+		padding-top: var(--space-xl);
+		border-top: 1px solid var(--border);
+	}
+
+	.author-card {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+	}
+
+	.author-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.author-name {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text);
+	}
+
+	.author-title {
+		font-size: 0.8rem;
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+	}
+
+	/* Related posts */
+	.related {
+		margin-top: var(--space-2xl);
+	}
+
+	.related-label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: var(--text-subtle);
+		margin-bottom: var(--space-lg);
+	}
+
+	.related-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.related-item {
+		border-top: 1px solid var(--border);
+	}
+
+	.related-item:last-child {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.related-link {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-lg);
+		padding: var(--space-md) 0;
+		text-decoration: none;
+	}
+
+	.related-title {
+		font-size: 0.9rem;
+		color: var(--text);
+		transition: color var(--transition);
+	}
+
+	.related-link:hover .related-title {
+		color: var(--accent);
+	}
+</style>

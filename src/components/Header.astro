@@ -1,0 +1,66 @@
+---
+import { SITE_TITLE } from '../consts';
+import HeaderLink from './HeaderLink.astro';
+---
+
+<header>
+	<nav>
+		<a href="/" class="wordmark">{SITE_TITLE}</a>
+		<div class="nav-links">
+			<HeaderLink href="/blog">Blog</HeaderLink>
+			<HeaderLink href="/work">Work</HeaderLink>
+			<HeaderLink href="/about">About</HeaderLink>
+		</div>
+	</nav>
+</header>
+
+<style>
+	header {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		height: var(--header-height);
+		background-color: rgba(0, 0, 0, 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border-bottom: 1px solid var(--border);
+	}
+
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: var(--max-width-wide);
+		max-width: calc(100% - 2rem);
+		height: 100%;
+		margin: 0 auto;
+		padding: 0 var(--space-md);
+	}
+
+	.wordmark {
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--text);
+		text-decoration: none;
+		letter-spacing: -0.01em;
+		font-family: var(--font-mono);
+		transition: color var(--transition);
+	}
+
+	.wordmark:hover {
+		color: var(--text-muted);
+		text-decoration: none;
+	}
+
+	.nav-links {
+		display: flex;
+		align-items: center;
+		gap: var(--space-lg);
+	}
+
+	@media (max-width: 480px) {
+		.nav-links {
+			gap: var(--space-md);
+		}
+	}
+</style>

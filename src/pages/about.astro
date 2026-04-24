@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/BlogPost.astro';
+import { AUTHOR, SITE_TITLE } from '../consts';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: AUTHOR.name,
+  jobTitle: AUTHOR.title,
+  url: `https://mykytashaban.dev`,
+  sameAs: [AUTHOR.github, AUTHOR.linkedin],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Wroclaw',
+    addressCountry: 'PL',
+  },
+};
+---
+
+<Layout
+  title={`About — ${SITE_TITLE}`}
+  description={`${AUTHOR.name} is a Frontend Performance Engineer based in Wroclaw, Poland. Focused on Core Web Vitals, e-commerce performance, and making the web faster.`}
+  pageJsonLd={jsonLd}
+>
+  <p>
+    I'm Mykyta Shaban, a senior frontend developer based in Wroclaw, Poland.
+    Originally from Ukraine.
+  </p>
+
+  <p>
+    I've spent several years building frontend applications with React and
+    modern JavaScript. My current focus is web performance — understanding what
+    makes pages slow, how to measure it properly, and how to fix it in a way
+    that actually holds up in production.
+  </p>
+
+  <p>
+    My day job involves working on a checkout SDK — code that runs inside other
+    companies' e-commerce sites. Checkout is one of the most
+    performance-sensitive surfaces on the web. A slow checkout costs money,
+    directly and measurably. That context made performance feel concrete rather
+    than theoretical.
+  </p>
+
+  <h2>What I focus on</h2>
+
+  <ul>
+    <li>
+      <strong>Core Web Vitals</strong> — measurement, diagnosis, and improvement of
+      LCP, CLS, and INP
+    </li>
+    <li>
+      <strong>JavaScript performance</strong> — bundle analysis, parse time, runtime
+      bottlenecks
+    </li>
+    <li>
+      <strong>E-commerce and checkout</strong> — where performance has direct business
+      impact
+    </li>
+    <li>
+      <strong>Rendering patterns</strong> — SSR, streaming, islands architecture,
+      partial hydration
+    </li>
+    <li>
+      <strong>Real user monitoring</strong> — field data, percentiles, understanding
+      real-world conditions
+    </li>
+  </ul>
+
+  <h2>This blog</h2>
+
+  <p>
+    I write to document what I learn. Clear notes from real work, not textbook
+    theory. If something helped me understand a concept or fix a problem in
+    production, it's worth writing about.
+  </p>
+
+  <h2>Connect</h2>
+
+  <p>
+    Find me on <a href={AUTHOR.github} target='_blank' rel='noopener noreferrer'
+      >GitHub</a
+    >,
+    <a href={AUTHOR.linkedin} target='_blank' rel='noopener noreferrer'
+      >LinkedIn</a
+    >. For direct contact: <a href={`mailto:${AUTHOR.email}`}>{AUTHOR.email}</a
+    >.
+  </p>
+</Layout>

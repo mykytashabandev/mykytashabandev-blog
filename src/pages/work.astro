@@ -1,0 +1,82 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { AUTHOR, SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Work — ${SITE_TITLE}`}
+			description={`Case studies and selected work by ${AUTHOR.name} — web performance projects and e-commerce optimization.`}
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+
+			<div class="page-header">
+				<h1>Work</h1>
+				<p class="page-sub">
+					Case studies and selected projects. Focused on performance improvements with
+					measurable results.
+				</p>
+			</div>
+
+			<div class="empty-state">
+				<p class="empty-label">Case studies coming soon</p>
+				<p class="empty-desc">
+					I'm currently documenting performance work from real projects. Check back soon,
+					or <a href="/blog">read the blog</a> in the meantime.
+				</p>
+			</div>
+
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-header {
+		padding-bottom: var(--space-xl);
+		border-bottom: 1px solid var(--border);
+		margin-bottom: var(--space-2xl);
+	}
+
+	.page-header h1 {
+		font-size: 1.5rem;
+		margin-bottom: var(--space-sm);
+	}
+
+	.page-sub {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		margin: 0;
+		max-width: 480px;
+	}
+
+	.empty-state {
+		padding: var(--space-2xl) 0;
+	}
+
+	.empty-label {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--text-subtle);
+		margin-bottom: var(--space-md);
+	}
+
+	.empty-desc {
+		font-size: 0.9rem;
+		color: var(--text-muted);
+		margin: 0;
+	}
+
+	.empty-desc a {
+		color: var(--text);
+	}
+</style>
