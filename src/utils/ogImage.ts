@@ -3,8 +3,8 @@ import satori from 'satori';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const fontRegular = readFileSync(join(process.cwd(), 'src/assets/fonts/atkinson-regular.woff'));
-const fontBold = readFileSync(join(process.cwd(), 'src/assets/fonts/atkinson-bold.woff'));
+const fontRegular = readFileSync(join(process.cwd(), 'node_modules/geist/dist/fonts/geist-sans/Geist-Regular.ttf'));
+const fontBold = readFileSync(join(process.cwd(), 'node_modules/geist/dist/fonts/geist-sans/Geist-Bold.ttf'));
 
 export async function generateOgImage(
 	title: string,
@@ -61,8 +61,8 @@ export async function generateOgImage(
 			width: 1200,
 			height: 630,
 			fonts: [
-				{ name: 'Atkinson', data: fontRegular, weight: 400, style: 'normal' },
-				{ name: 'Atkinson', data: fontBold, weight: 700, style: 'normal' },
+				{ name: 'Geist', data: fontRegular, weight: 400, style: 'normal' },
+				{ name: 'Geist', data: fontBold, weight: 700, style: 'normal' },
 			],
 		},
 	);
